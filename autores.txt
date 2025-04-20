@@ -1,2 +1,3 @@
-NIA,Apellidos,Nombre <- Reemplazame (eliminame)
-NIA,Surname,First name <-Replace Me (delete me)
+100522240,Loren Moldovan,Denis
+100522110,Lemus Yeguas,Antonio Nicolas
+100522257,Saghin Dudulea,Jorge Adrian
