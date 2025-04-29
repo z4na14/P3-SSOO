@@ -1,17 +1,12 @@
-/*
- *
- * process_manager.c
- *
- */
-
+#include <errno.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
 #include <fcntl.h>
 #include <stddef.h>
 #include <pthread.h>
-#include "queue.h"
 #include <semaphore.h>
+#include "queue.h"
 
 #define NUM_THREADS 2
 
@@ -27,7 +22,7 @@ void *PrintHello(void *threadid)
 }
 
 
-int process_manager (int id, int belt_size, int items_to_produce ){
+int process_manager(int id, int belt_size, int items_to_produce ){
 	pthread_t threads[NUM_THREADS];
    	int rc;
    	long t;
@@ -61,3 +56,4 @@ int process_manager (int id, int belt_size, int items_to_produce ){
    	return(0);
 	
 }
+

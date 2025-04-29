@@ -1,10 +1,10 @@
-#ifndef HEADER_FILE
-#define HEADER_FILE
+#ifndef QUEUE_H
+#define QUEUE_H
 
 struct element {
-  int num_edition;
-  int id_belt;
-  int last;
+  int num_edition; // Order inside the belt
+  int id_belt; // ID of the belt where the object is created
+  int last; // 1 if inserted the last one, 0 otherwise
 };
 
 int queue_init (int size);
