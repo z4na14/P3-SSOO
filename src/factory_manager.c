@@ -7,15 +7,13 @@
 #include <semaphore.h>
 #include <sys/stat.h>
 #include <string.h>
+#include <pthread.h>
 #include "process_manager.h"
 #include "factory_manager.h"
-
-sem_t BELTS_SEM;
 
 
 int main (const int argc, const char *argv[]){
 	//int* status;
-	int id = -1;
 
 	if (argc != 2) {
 		errno = EINVAL;
@@ -23,22 +21,21 @@ int main (const int argc, const char *argv[]){
 		exit(EXIT_FAILURE);
 	}
 
+	// Get information from the input file and store it into file_buffer
 	char* file_buffer = 0;
 	int buffer_size = parse_file(argv[1], &file_buffer);
+
 	if (tokenizar_linea(file_buffer, "\n", NULL, 0) != 1) {
 		errno = EINVAL;
 		perror("Invalid number of arguments inside input file");
 		exit(EXIT_FAILURE);
 	}
 
+	// Divide into tokens the input line from the buffer
 	int tokens[buffer_size / 2];
 	memset(tokens, 0, sizeof(tokens));
-	int num_info = tokenizar_linea(file_buffer, "\t\n ", tokens, 1);
 
-	// Allocate memory for storing the belts
-	BELTS = malloc(sizeof(belt) * tokens[0]);
-	// Initialize semaphore with the maximum number of process managers
-	sem_init(&BELTS_SEM, 0, tokens[0]);
+	int num_info = tokenizar_linea(file_buffer, "\t\n ", tokens, 1);
 
 	// If we don't have an even number from the input, it means that the input is incorrect
 	if (((num_info - 1) % 3) != 0) {
@@ -46,6 +43,17 @@ int main (const int argc, const char *argv[]){
 		perror("Wrong number of arguments inside input file");
 		exit(EXIT_FAILURE);
 	}
+
+
+	// Populate global variables with the contents of the input file
+	MAX_BELTS = tokens[0];
+	// Initialize semaphore with the maximum number of process managers
+	sem_init(&BELTS_SEM, 0, MAX_BELTS);
+	// Create array with the maximum number of threads we are going to be using
+	THREAD_ARR_PROCESSES = malloc(sizeof(pthread_t *) * MAX_BELTS);
+
+	// Allocate memory for storing the belts
+	BELTS = malloc(sizeof(belt) * MAX_BELTS);
 	// Move all the information into the global array
 	int num_of_belts = 0;
 	for (int i = 1; i < num_info; i+=3) {
@@ -55,19 +63,29 @@ int main (const int argc, const char *argv[]){
 	// Free the buffer with the contents of the input
 	free(file_buffer);
 
+
 	// For each belt that must be processes
 	for (int i = 0; i < num_of_belts; i++) {
-		// perform wait on parent thread and create a new one
+		// perform wait on parent thread
 		sem_wait(&BELTS_SEM);
-		
+
+		// get the current semaphore value and use as index in the thread pool
+		int curr_semaphore;
+		sem_getvalue(&BELTS_SEM, &curr_semaphore);
+		curr_semaphore = MAX_BELTS - curr_semaphore - 1;
+
+		// and create a new one
+		pthread_create(&THREAD_ARR_PROCESSES[curr_semaphore], NULL, (void*)process_manager, (void*)curr_semaphore);
 	}
 
 
 
-
+	free(THREAD_ARR_PROCESSES);
+	free(BELTS);
 
 	return 0;
 }
+
 
 /**
  * This function splits a char* line into different tokens based on a given character.
@@ -123,7 +141,6 @@ int tokenizar_linea(char *linea, const char *delim, void *tokens, const unsigned
 	return i;
 }
 
-
 /**
  * Function used to parse the input file and return the contents inside a buffer. \0 delimits
  * are also added when processing it.
@@ -168,6 +185,7 @@ unsigned int parse_file(const char *filename, char **filebuff) {
 		exit(EXIT_FAILURE);
 	}
 
+	// Close the file with the commands :D
 	close(filefd);
 
 	return buffer_size;

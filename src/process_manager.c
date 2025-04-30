@@ -28,22 +28,22 @@ int process_manager(int id, int belt_size, int items_to_produce ){
    	long t;
 
 	//using the definded struct/function in queue.c
-	struct element * elemento = NULL;
+	//struct element *elemento = NULL;
 	queue_empty();	
 
 	printf("Hello! I am the process manager and I have %d minions.\n", NUM_THREADS);
 
 	for(t=0;t<NUM_THREADS;t++){
-     		printf("Creating thread %ld\n", t);
+     	printf("Creating thread %ld\n", t);
 		
 		//launching a thread
-     		rc = pthread_create(&threads[t], NULL, PrintHello, (void *)t);
+     	rc = pthread_create(&threads[t], NULL, PrintHello, (void *)t);
      		
 		if (rc){
-       			printf("ERROR; return code from pthread_create() is %d\n", rc);
-       			exit(-1);
-       		}
-     	}
+       		printf("ERROR; return code from pthread_create() is %d\n", rc);
+       		exit(-1);
+       	}
+    }
 
 	int i = 0;
 	for(i = 0; i < NUM_THREADS; i++)
