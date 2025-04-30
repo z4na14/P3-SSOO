@@ -12,12 +12,10 @@
 
 
 //Thread function
-void *PrintHello(void *threadid)
-{
-   	long tid;
-   	tid = (long)threadid;
-   	printf("Hello World! It's me, thread #%ld!\n", tid);
-	printf("Thread #%ld ends\n", tid);
+void *PrintHello(void *threadid){
+	int tid = *(int*)threadid;
+   	printf("Hello World! It's me, thread #%d!\n", tid);
+	printf("Thread #%d ends\n", tid);
    	pthread_exit(0);
 }
 
@@ -54,6 +52,5 @@ int process_manager(int id, int belt_size, int items_to_produce ){
 
    	/* Last thing that main() should do */
    	return(0);
-	
 }
 

@@ -75,9 +75,10 @@ int main (const int argc, const char *argv[]){
 		curr_semaphore = MAX_BELTS - curr_semaphore - 1;
 
 		// and create a new one
-		pthread_create(&THREAD_ARR_PROCESSES[curr_semaphore], NULL, (void*)process_manager, (void*)curr_semaphore);
+		// pthread_create(&THREAD_ARR_PROCESSES[curr_semaphore], NULL, (void*)process_manager, (void*)curr_semaphore);
+		pthread_create(&THREAD_ARR_PROCESSES[curr_semaphore], NULL, PrintHello, &curr_semaphore);
+		//pthread_join(THREAD_ARR_PROCESSES[curr_semaphore], NULL);
 	}
-
 
 
 	free(THREAD_ARR_PROCESSES);

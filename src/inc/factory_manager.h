@@ -1,15 +1,10 @@
 #ifndef FACTORY_MANAGER_H
 #define FACTORY_MANAGER_H
 
+#include "belt_struct.h"
+
 int tokenizar_linea(char *linea, const char *delim, void *tokens, const unsigned int type);
 unsigned int parse_file(const char *filename, char **filebuff);
-
-typedef struct {
-    unsigned int id; // ID of the process
-    unsigned int size; // Size of the belt from the process
-    unsigned int number_of_elements; // Number of elements to produce using the belt
-    unsigned int pool_pos; // Position in the THREAD_ARR_PROCESSES pool array
-} belt;
 
 int MAX_BELTS; // Max number of processes active
 belt *BELTS; // Array to store the belt structures
