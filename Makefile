@@ -11,7 +11,7 @@ OBJ=$(BUILD_DIR)/queue.o $(BUILD_DIR)/process_manager.o $(BUILD_DIR)/factory_man
 
 ZIP_NAME=ssoo_p3_100522240_100522110_100522257.zip
 
-all: clean
+all:
 	$(CC) $(INCLUDE) -c queue.c -o queue.o
 	$(CC) $(INCLUDE) -c process_manager.c -o process_manager.o
 	$(CC) $(INCLUDE) -c factory_manager.c -o factory_manager.o

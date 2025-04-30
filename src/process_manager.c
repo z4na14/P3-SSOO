@@ -6,51 +6,34 @@
 #include <stddef.h>
 #include <pthread.h>
 #include <semaphore.h>
+
 #include "queue.h"
+#include "process_manager.h"
 
-#define NUM_THREADS 2
 
-
+/*
 //Thread function
-void *PrintHello(void *threadid){
+void *PrintHello(void *threadid) {
 	int tid = *(int*)threadid;
    	printf("Hello World! It's me, thread #%d!\n", tid);
 	printf("Thread #%d ends\n", tid);
    	pthread_exit(0);
 }
+*/
 
 
-int process_manager(int id, int belt_size, int items_to_produce ){
-	pthread_t threads[NUM_THREADS];
-   	int rc;
-   	long t;
+void *process_manager(void *belt_ptr) {
+	// Cast belt struct to avoid miss writing it
+	belt *current_belt = belt_ptr;
+	// Malloc return value so it's read in parent thread (factory_manager)
+	int *result = malloc(sizeof(int));
 
-	//using the definded struct/function in queue.c
-	//struct element *elemento = NULL;
-	queue_empty();	
+	// Wait for the signal of the factory manager to begin working on the belt
+	sem_wait(&current_belt -> semaphore_b);
 
-	printf("Hello! I am the process manager and I have %d minions.\n", NUM_THREADS);
+	printf("UWU %d\n", current_belt -> id);
 
-	for(t=0;t<NUM_THREADS;t++){
-     	printf("Creating thread %ld\n", t);
-		
-		//launching a thread
-     	rc = pthread_create(&threads[t], NULL, PrintHello, (void *)t);
-     		
-		if (rc){
-       		printf("ERROR; return code from pthread_create() is %d\n", rc);
-       		exit(-1);
-       	}
-    }
-
-	int i = 0;
-	for(i = 0; i < NUM_THREADS; i++)
-	{	
-		pthread_join(threads[i], NULL);
-	}
-	printf("Fin process manager\n");
-
-   	/* Last thing that main() should do */
-   	return(0);
+	// Assign exit status to return var
+	*result = EXIT_SUCCESS;
+   	pthread_exit(result);
 }
-
