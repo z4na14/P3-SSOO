@@ -48,6 +48,8 @@ int main (const int argc, const char *argv[]){
 		// Semaphore initialization
 		sem_init(&BELTS[num_of_belts].semaphore_b, 0, 0);
 	}
+	// Begin global factory semaphore to synchronize the start of the process threads
+	sem_init(&FACTORY_SEM, 0, 0);
 
 	// If we don't have an even number from the input, it means that the input is incorrect
 	if (((num_info - 1) % 3) != 0 || num_of_belts >= tokens[0]) {
@@ -60,13 +62,20 @@ int main (const int argc, const char *argv[]){
 
 
 	// For each belt that must be processes
-	for (int i = 0; i < num_of_belts; i++) {
+	for (i = 0; i < num_of_belts; i++) {
 		pthread_create(&BELTS[i].thread_b, NULL, process_manager, &BELTS[i]);
 		fprintf(stdout, "[OK][factory_manager] Process_manager with id %d has been created.\n", BELTS[i].id);
 	}
 
-	for (int i = 0; i < num_of_belts; i++) {
-		// Send signal to begin processing to the first thread to wait on the semaphore
+	for (i = 0; i < num_of_belts; i++) {
+		// Send signal to start each thread in order
+		sem_post(&BELTS[i].semaphore_b);
+		// After starting the thread, wait for it to answer
+		sem_wait(&FACTORY_SEM);
+	}
+
+	for (i = 0; i < num_of_belts; i++) {
+		// Send signal to begin processing each belt in order
 		sem_post(&BELTS[i].semaphore_b);
 
 		// Wait for the process to finish, get its return value, and go back to the beginning of

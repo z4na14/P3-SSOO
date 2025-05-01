@@ -2,9 +2,9 @@
 #define BELT_STRUCT_H
 
 typedef struct {
-    unsigned int id; // ID of the process
-    unsigned int size; // Size of the belt from the process
-    unsigned int number_of_elements; // Number of elements to produce using the belt
+    int id; // ID of the process
+    int size; // Size of the belt from the process
+    int number_of_elements; // Number of elements to produce using the belt
     sem_t semaphore_b; // Semaphore assigned to the corresponding belt
     pthread_t thread_b; // Thread assigned to the corresponding belt
 } belt;

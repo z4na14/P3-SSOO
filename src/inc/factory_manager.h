@@ -9,4 +9,6 @@ unsigned int parse_file(const char *filename, char **filebuff);
 int MAX_BELTS; // Max number of processes active
 belt *BELTS; // Array to store the belt structures
 
+sem_t FACTORY_SEM;
+
 #endif
