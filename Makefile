@@ -8,13 +8,14 @@ INCLUDE=-I./$(SRC_DIR)/inc
 
 SRCS=$(wildcard $(SRC_DIR)/*.c)
 OBJ=$(BUILD_DIR)/queue.o $(BUILD_DIR)/process_manager.o $(BUILD_DIR)/factory_manager.o
+INC=$(SRC_DIR)/inc/belt_struct.h $(SRC_DIR)/inc/factory_manager.h $(SRC_DIR)/inc/process_manager.h $(SRC_DIR)/inc/queue.h
 
-ZIP_NAME=ssoo_p3_100522240_100522110_100522257.zip
+ZIP_NAME=./tests/ssoo_p3_100522240_100522110_100522257.zip
 
 all:
-	$(CC) $(INCLUDE) -O3 -c queue.c -o queue.o
-	$(CC) $(INCLUDE) -O3 -c process_manager.c -o process_manager.o
-	$(CC) $(INCLUDE) -O3 -c factory_manager.c -o factory_manager.o
+	$(CC) -I. -O3 -c queue.c -o queue.o
+	$(CC) -I. -O3 -c process_manager.c -o process_manager.o
+	$(CC) -I. -O3 -c factory_manager.c -o factory_manager.o
 
 	$(CC) $(LIBS) -o factory queue.o process_manager.o factory_manager.o
 
@@ -39,8 +40,7 @@ $(BUILD_DIR)/factory_manager.o: $(SRC_DIR)/factory_manager.c
 
 .PHONY: zip
 zip:
-	@mkdir -p $(TESTS_DIR)
-	zip -j $(ZIP_NAME) $(SRCS) Makefile autores.txt
+	zip -j $(ZIP_NAME) $(SRCS) $(INC) Makefile autores.txt
 
 .PHONY: clean
 clean:
