@@ -15,21 +15,34 @@ titulo: Multi-thread programming. Control of fabrication
 ---
 # Description of the code
 
-## queue
+## queue.c
+### queue_init()
+### queue_destroy()
+### queue_put()
+### queue_get()
+### queue_empty()
+### queue_full()
 
 
 
-## process_manager
+## process_manager.c
+### process_manager()
+### producer()
+### consumer()
 
-## factory_manager
-
-### main
 
 
-### tokenizar_linea
-### parse_file
+## factory_manager.c
+### main()
+### tokenizar_linea()
+### parse_file()
 
 
 # Tests
+
+| Test<br/>ID | Description | Inputs | Expected outputs |
+|-------------|-------------|--------|------------------|
+|             |             |        |                  |
+|             |             |        |                  |
 
 # Conclusion

@@ -3,13 +3,19 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <fcntl.h>
-#include <stddef.h>
 #include <semaphore.h>
 #include <sys/stat.h>
 #include <string.h>
 #include <pthread.h>
+
 #include "process_manager.h"
 #include "factory_manager.h"
+#include "belt_struct.h"
+
+int MAX_BELTS; // Max number of processes active
+belt *BELTS; // Array to store the belt structures
+
+sem_t FACTORY_SEM;
 
 
 int main (const int argc, const char *argv[]){
@@ -22,7 +28,7 @@ int main (const int argc, const char *argv[]){
 
 	// Get information from the input file and store it into file_buffer
 	char* file_buffer = 0;
-	int buffer_size = parse_file(argv[1], &file_buffer);
+	int buffer_size = (int) parse_file(argv[1], &file_buffer);
 
 	if (tokenizar_linea(file_buffer, "\n", NULL, 0) != 1) {
 		fprintf(stderr, "[ERROR][factory_manager] Invalid file\n");
@@ -114,43 +120,48 @@ int tokenizar_linea(char *linea, const char *delim, void *tokens, const unsigned
 		exit(EXIT_FAILURE);
 	}
 
-	int i = 0;
+	int index = 0;
 	char *token = strtok(linea, delim);
 	char *err = 0;
 
 	// If no place to store tokens is passed, return just the number of findings
 	if (tokens == NULL) {
 		while (token != NULL) {
-			i++;
+			index++;
 			token = strtok(NULL, delim);
 		}
-		return i;
+		return index;
 	}
 
+	// Divide into two possible input strings, depending on the type passed as argument
 	int *tokens_ptr_int = NULL;
 	char **tokens_ptr_str = NULL;
 
 	if (type) {tokens_ptr_int = (int *) tokens;}
 	else {tokens_ptr_str = (char **) &tokens;}
 
+	// While there are tokens found
 	while (token != NULL) {
 		if (type) {
-			tokens_ptr_int[i++] = (int) strtol(token, &err, 10);
-
+			// If type = 1: Integer, convert into integer
+			tokens_ptr_int[index++] = (int) strtol(token, &err, 10);
+			// and check for errors during the conversion
 			if (*err != '\0') {
 				fprintf(stderr, "[ERROR][factory_manager] Invalid file\n");
 				exit(EXIT_FAILURE);
 			}
 		}
-		else {tokens_ptr_str[i++] = token;}
+		// Otherwise, add to the array directly
+		else {tokens_ptr_str[index++] = token;}
 
+		// and get the following token to add
 		token = strtok(NULL, delim);
 	}
 
 	// Null-terminate the string array
-	if (!type) { tokens_ptr_str[i] = NULL;}
+	if (!type) {tokens_ptr_str[index] = NULL;}
 
-	return i;
+	return index;
 }
 
 /**
