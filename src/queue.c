@@ -28,12 +28,12 @@ int queue_init(belt *current_belt) {
         exit(EXIT_FAILURE);
     }
 
-    BUFFER = malloc(current_belt -> size * sizeof(element *));
+    BUFFER = malloc(current_belt -> size * sizeof(element **));
     if (!BUFFER) {
         fprintf(stderr, "[ERROR][queue] There was an error while using queue with id: %d.\n", current_belt -> id);
         exit(EXIT_FAILURE);
     }
-    memset(BUFFER, 0, current_belt -> size * sizeof(element *));
+    memset(BUFFER, 0, current_belt -> size * sizeof(element **));
 
     sem_init(&EMPTY_SLOTS_SEM, 0, current_belt -> size); // Initially all slots are empty
     sem_init(&FULL_SLOTS_SEM, 0, 0); // Initially no slots are full
@@ -64,16 +64,19 @@ int queue_destroy(belt *current_belt) {
 // Add an element to the queue (waits if full)
 int queue_put(belt *current_belt, element *elem) {
     sem_wait(&EMPTY_SLOTS_SEM); // Check if there are enough empty slots
-    pthread_mutex_lock(&QUEUE_MUTEX);
+    pthread_mutex_lock(&QUEUE_MUTEX); // and lock the critical section while modifying it
 
-    head_pos = (tail_pos + count) % current_belt -> size;
-    BUFFER[head_pos] = elem; // Add element to buffer
-    count++; // Increase count of the number of elements
+    // Calculate insertion point BEFORE modifying count
+    int insert_pos = (head_pos + 1) % current_belt->size;
+    BUFFER[head_pos] = elem;
+    head_pos = insert_pos;  // Update head after insertion
+    count++;
 
-    pthread_mutex_unlock(&QUEUE_MUTEX);
+    pthread_mutex_unlock(&QUEUE_MUTEX); // Unlock the critical section
     sem_post(&FULL_SLOTS_SEM); // Send signal to full_slots semaphore
 
-    fprintf(stdout, "[OK][queue] Introduced element with id %d in belt %d.\n", elem -> num_edition, current_belt -> id);
+    fprintf(stdout, "[OK][queue] Introduced element with id %d in belt %d.\n",
+        elem -> num_edition, current_belt -> id);
 
     return 0;
 }
@@ -83,15 +86,22 @@ element *queue_get(belt *current_belt) {
     sem_wait(&FULL_SLOTS_SEM); // Check if there are any elements in the buffer
     pthread_mutex_lock(&QUEUE_MUTEX); // Lock mutex and access critical section
 
-    element *elem = BUFFER[tail_pos]; // Retrieve element from buffer
-    BUFFER[tail_pos] = NULL; // Clear the slot after taking the element
-    tail_pos = (tail_pos + 1) % current_belt -> size;
-    count--; // Decrease count of the number of elements
+    element *elem = BUFFER[tail_pos];
+    if (elem == NULL) {  // Additional safety check
+        pthread_mutex_unlock(&QUEUE_MUTEX);
+        sem_post(&FULL_SLOTS_SEM);  // Restore semaphore count
+        return NULL;
+    }
+
+    BUFFER[tail_pos] = NULL;
+    tail_pos = (tail_pos + 1) % current_belt->size;
+    count--;
 
     pthread_mutex_unlock(&QUEUE_MUTEX);
     sem_post(&EMPTY_SLOTS_SEM);
 
-    fprintf(stdout, "[OK][queue] Obtained element with id %d in belt %d.\n", elem -> num_edition, current_belt -> id);
+    fprintf(stdout, "[OK][queue] Obtained element with id %d in belt %d.\n",
+        elem -> num_edition, current_belt -> id);
 
     return elem;
 }

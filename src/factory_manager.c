@@ -44,11 +44,22 @@ int main (const int argc, const char *argv[]){
 
 	// Populate global variables with the contents of the input file
 	MAX_BELTS = tokens[0];
+	// Check if the input information is valid
+	if (MAX_BELTS <= 0) {
+		fprintf(stderr, "[ERROR][factory_manager] Invalid file\n");
+		exit(EXIT_FAILURE);
+	}
+
 	// Allocate memory for storing the belts
 	BELTS = malloc(sizeof(belt) * MAX_BELTS);
 	// Move all the information into the global array
 	int i, num_of_belts;
 	for (i = 1, num_of_belts = 0; i < num_info; i+=3, num_of_belts++) {
+		// Check if information is valid
+		if (tokens[i] <= 0 || tokens[i+1] <= 0 || tokens[i+2] <= 0) {
+			fprintf(stderr, "[ERROR][factory_manager] Invalid file\n");
+			exit(EXIT_FAILURE);
+		}
 		// Inputted information
 		BELTS[num_of_belts] = (belt) {tokens[i], tokens[i+1], tokens[i+2]};
 		// Semaphore initialization
@@ -88,7 +99,8 @@ int main (const int argc, const char *argv[]){
 		// the loop to launch the following thread
 		void *thread_return;
 		if (pthread_join(BELTS[i].thread_b, &thread_return) != 0 || *(int*)thread_return != 0) {
-			fprintf(stderr, "[ERROR][factory_manager] Process_manager with id %d has finished with errors.\n", BELTS[i].id);
+			fprintf(stderr, "[ERROR][factory_manager] Process_manager with id %d has finished with errors.\n",
+				BELTS[i].id);
 		}
 		else {
 			fprintf(stdout, "[OK][factory_manager] Process_manager with id %d has finished.\n", BELTS[i].id);
