@@ -22,7 +22,7 @@ int main (const int argc, const char *argv[]){
 	//int* status;
 
 	if (argc != 2) {
-		fprintf(stderr, "[ERROR][factory_manager] Invalid file\n");
+		fprintf(stderr, "[ERROR][factory_manager] Invalid file.\n");
 		exit(EXIT_FAILURE);
 	}
 
@@ -31,7 +31,7 @@ int main (const int argc, const char *argv[]){
 	int buffer_size = (int) parse_file(argv[1], &file_buffer);
 
 	if (tokenizar_linea(file_buffer, "\n", NULL, 0) != 1) {
-		fprintf(stderr, "[ERROR][factory_manager] Invalid file\n");
+		fprintf(stderr, "[ERROR][factory_manager] Invalid file.\n");
 		exit(EXIT_FAILURE);
 	}
 
@@ -41,12 +41,16 @@ int main (const int argc, const char *argv[]){
 
 	int num_info = tokenizar_linea(file_buffer, "\t\n ", tokens, 1);
 
+	if (num_info < 4) {
+		fprintf(stderr, "[ERROR][factory_manager] Invalid file.\n");
+		exit(EXIT_FAILURE);
+	}
 
 	// Populate global variables with the contents of the input file
 	MAX_BELTS = tokens[0];
 	// Check if the input information is valid
 	if (MAX_BELTS <= 0) {
-		fprintf(stderr, "[ERROR][factory_manager] Invalid file\n");
+		fprintf(stderr, "[ERROR][factory_manager] Invalid file.\n");
 		exit(EXIT_FAILURE);
 	}
 
@@ -57,7 +61,7 @@ int main (const int argc, const char *argv[]){
 	for (i = 1, num_of_belts = 0; i < num_info; i+=3, num_of_belts++) {
 		// Check if information is valid
 		if (tokens[i] <= 0 || tokens[i+1] <= 0 || tokens[i+2] <= 0) {
-			fprintf(stderr, "[ERROR][factory_manager] Invalid file\n");
+			fprintf(stderr, "[ERROR][factory_manager] Invalid file.\n");
 			exit(EXIT_FAILURE);
 		}
 		// Inputted information
@@ -69,8 +73,8 @@ int main (const int argc, const char *argv[]){
 	sem_init(&FACTORY_SEM, 0, 0);
 
 	// If we don't have an even number from the input, it means that the input is incorrect
-	if (((num_info - 1) % 3) != 0 || num_of_belts >= tokens[0]) {
-		fprintf(stderr, "[ERROR][factory_manager] Invalid file\n");
+	if (((num_info - 1) % 3) != 0 || num_of_belts > MAX_BELTS) {
+		fprintf(stderr, "[ERROR][factory_manager] Invalid file.\n");
 		exit(EXIT_FAILURE);
 	}
 
@@ -128,7 +132,7 @@ int main (const int argc, const char *argv[]){
  */
 int tokenizar_linea(char *linea, const char *delim, void *tokens, const unsigned int type) {
 	if (linea == NULL) {
-		fprintf(stderr, "[ERROR][factory_manager] Invalid file\n");
+		fprintf(stderr, "[ERROR][factory_manager] Invalid file.\n");
 		exit(EXIT_FAILURE);
 	}
 
@@ -159,7 +163,7 @@ int tokenizar_linea(char *linea, const char *delim, void *tokens, const unsigned
 			tokens_ptr_int[index++] = (int) strtol(token, &err, 10);
 			// and check for errors during the conversion
 			if (*err != '\0') {
-				fprintf(stderr, "[ERROR][factory_manager] Invalid file\n");
+				fprintf(stderr, "[ERROR][factory_manager] Invalid file.\n");
 				exit(EXIT_FAILURE);
 			}
 		}
@@ -187,20 +191,20 @@ unsigned int parse_file(const char *filename, char **filebuff) {
 	// Open file
 	int filefd;
 	if ((filefd = open(filename, O_RDWR, 0664)) < 0) {
-		fprintf(stderr, "[ERROR][factory_manager] Invalid file\n");
+		fprintf(stderr, "[ERROR][factory_manager] Invalid file.\n");
 		exit(EXIT_FAILURE);
 	}
 
 	// Define buffer with size from file
 	struct stat fd_st;
 	if (fstat(filefd, &fd_st) < 0) {
-		fprintf(stderr, "[ERROR][factory_manager] Invalid file\n");
+		fprintf(stderr, "[ERROR][factory_manager] Invalid file.\n");
 		exit(EXIT_FAILURE);
 	}
 
 	// If the file is empty, exit the program
 	if (fd_st.st_size == 0) {
-		fprintf(stderr, "[ERROR][factory_manager] Invalid file\n");
+		fprintf(stderr, "[ERROR][factory_manager] Invalid file.\n");
 		exit(EXIT_FAILURE);
 	}
 
@@ -215,7 +219,7 @@ unsigned int parse_file(const char *filename, char **filebuff) {
 
 	// Read contents from file
 	if (read(filefd, *filebuff, buffer_size - 1) < 0) {
-		fprintf(stderr, "[ERROR][factory_manager] Invalid file\n");
+		fprintf(stderr, "[ERROR][factory_manager] Invalid file.\n");
 		exit(EXIT_FAILURE);
 	}
 
