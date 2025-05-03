@@ -1,6 +1,15 @@
 .idea
 build
 tests/ssoo_p3_100522240_100522110_100522257
+report/report.aux
+report/report.bcf
+report/report.bcf-SAVE-ERROR
+report/report.fdb_latexmk
+report/report.fls
+report/report.log
+report/report.run.xml
+report/report.toc
+report/svg-inkscape/
 
 # Prerequisites
 *.d

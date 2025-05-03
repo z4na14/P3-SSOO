@@ -13,7 +13,7 @@ int queue_init(belt *current_belt) ;
 int queue_destroy(belt *current_belt);
 int queue_put(belt *current_belt, element *elem);
 element *queue_get(belt *current_belt);
-int queue_empty(belt *current_belt);
+int queue_empty();
 int queue_full(belt *current_belt);
 
 #endif

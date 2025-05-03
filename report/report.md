@@ -11,38 +11,128 @@ autores:
   - nombre: Antonio Nicolas Lemus Yeguas
     nia: 100522110
 nombre-lab: Laboratory 3
-titulo: Multi-thread programming. Control of fabrication
+titulo: Multi-thread programming
 ---
 # Description of the code
 
+The laboratory is composed of three source files, all compiled into the same one. Therefore, multiple header files had been used, each one having their respective import protections and
+function declarations.
+
 ## queue.c
-### queue_init()
-### queue_destroy()
-### queue_put()
-### queue_get()
-### queue_empty()
-### queue_full()
+
+This file is responsible for the manipulation of the different queues created during the 
+duration of the program. A single queue can be used at the same time, following the statement
+of the exercise, therefore, without the need of implementing a more complex algorithm to
+control more queues. 
+
+### queue\_init\(\)
+
+Function responsible for intializing the queue used by the current belt, doing the necessary checks
+of the input data, starting the semaphores and the mutex.
+
+### queue\_destroy\(\)
+
+Destroys everything created by the afore mentioned function, clearing the remaining elements
+from the buffer that could not have been freed corectly during the belt processing.
+
+### queue\_put\(\)
+
+Puts an element into the queue, following the respective synchronization mechanisms. For this,
+three static global variables are going to be used, one for the position of the head, another 
+for the tail, and the total count of elements inside the buffer.
+
+To calculate the insertion position, we use the operation:
+
+$$(head\_pos + 1) \% \text{ current\_belt -> size}$$
+
+Where the head position is the last place where we inserted an element, and we perform the modulus
+with the size of the belt to remain inside the belts boundaries.
+
+### queue\_get\(\)
+
+As putting an element, we are going to be calculating the position of the element to be getting, 
+first retrieving said element from the buffer, and then updating the tail position usign a similar
+operation as the `queue_put` function:
+
+$$(tail\_pos + 1) \% \text{ current\_belt -> size}$$
+
+
+### queue\_empty\(\)
+
+Checks if the queue is empty by using the `count` variable.
+
+### queue\_full\(\)
+
+Same as `queue_empty`, but checks comparing it to the belt struct.
+
+
+## process\_manager.c
+
+asdad
+
+### process\_manager\(\)
+
+asdasd
+
+### producer\(\)
+
+asdasda
+
+### consumer\(\)
+
+asdasdad
 
 
 
-## process_manager.c
-### process_manager()
-### producer()
-### consumer()
+## factory\_manager.c
+
+asdasdad
+
+### main\(\)
+
+asdasd
+
+### tokenizar\_linea\(\)
+
+asasdad
+
+### parse\_file\(\)
 
 
-
-## factory_manager.c
-### main()
-### tokenizar_linea()
-### parse_file()
+asdasdadasdsad
 
 
 # Tests
 
-| Test<br/>ID | Description | Inputs | Expected outputs |
-|-------------|-------------|--------|------------------|
-|             |             |        |                  |
-|             |             |        |                  |
+When running the tester, we were encountering times where we were getting 73/74 and other ones with 74/74. We cheked and realized that the Test 6 was failing sometimes. Even though, we reached to the conclusion that sometimes the scheduling of the operating system was putting one of the threads before another one, therefore changing the output and failing the test.
+
+Aside from the base tests provided in the tester, we are going to use the following ones to check manually if the solution follows the basic description of the statement.
+
+| Test ID | Description | Inputs | Expected Outputs |
+|---------|-------------|--------|------------------|
+| TC01 | Single belt with valid values | Input file: `1 1 5 5` | Producer and consumer complete 5 elements successfully |
+| TC02 | Two belts concurrently | Input file: `2 1 5 5 2 10 10` | Both belts produce/consume all elements correctly |
+| TC03 | Belt with buffer size 1 | Input file: `1 1 1 3` | Queue operates with minimal size; producer/consumer synchronize correctly |
+| TC04 | Belt with zero size (invalid) | Input file: `1 1 0 5` | Error message, program exits with failure |
+| TC05 | Belt with zero elements to produce (invalid) | Input file: `1 1 5 0` | Error message, program exits with failure |
+| TC06 | Belt with negative ID (invalid) | Input file: `1 -1 5 5` | Error message, program exits with failure |
+| TC07 | Belt with negative size (invalid) | Input file: `1 1 -5 5` | Error message, program exits with failure |
+| TC08 | Belt with large number of elements | Input file: `1 1 100 1000` | Program runs and processes all elements correctly |
+| TC09 | Multiple belts with varied sizes and loads | Input file: `3 1 5 10 2 3 6 3 7 14` | All belts complete independently without interference |
+| TC10 | Invalid file with missing fields | Input file: `1 1 5` | Error message, program exits with failure |
+| TC11 | Queue full scenario handling | Input file: `1 1 2 5` | Producer waits for consumer when queue is full, and completes successfully |
+| TC12 | Queue empty scenario handling | Input file: `1 1 5 2` | Consumer waits for producer and completes correctly |
+| TC13 | Even belt count mismatch | Input file: `2 1 5 5 2 10` | Error message, program exits with failure |
+| TC14 | File with non-numeric values | Input file: `1 a b c` | Error message, program exits with failure |
+| TC15 | Empty input file | Input file: (empty) | Error message, program exits with failure |
+| TC16 | Input with extra tokens beyond expected | Input file: `1 1 5 5 99` | Error message, program exits with failure |
+| TC17 | Producer fails memory allocation | Simulate malloc failure in `producer()` | Error message, thread exits with failure |
+| TC18 | Consumer fails integrity check | Simulate mismatch in `id_belt` | Error message, thread exits with failure |
+| TC19 | Stress test with 100 belts | Input file: `100` followed by 100 belt definitions | All belts process correctly in parallel |
+| TC20 | Producer produces only 1 element | Input file: `1 1 5 1` | Single element produced and consumed successfully |
+
+
 
 # Conclusion
+
+ola

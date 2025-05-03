@@ -15,7 +15,7 @@
 
 \RequirePackage{enumerate}
 \RequirePackage{etoolbox}
-
+\usepackage{longtable}
 
 
 %----------

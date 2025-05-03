@@ -8,9 +8,6 @@
 #include "belt_struct.h"
 
 
-extern int MAX_BELTS; // Max number of processes active
-extern sem_t FACTORY_SEM; // Factory semaphore to synch with child threads
-
 static element **BUFFER; // Buffer for the producer - consumer solution
 static sem_t EMPTY_SLOTS_SEM; // Synchronization mechanism for the buffer
 static sem_t FULL_SLOTS_SEM; // Synchronization mechanism for the buffer
@@ -67,7 +64,7 @@ int queue_put(belt *current_belt, element *elem) {
     pthread_mutex_lock(&QUEUE_MUTEX); // and lock the critical section while modifying it
 
     // Calculate insertion point BEFORE modifying count
-    int insert_pos = (head_pos + 1) % current_belt->size;
+    int insert_pos = (head_pos + 1) % current_belt -> size;
     BUFFER[head_pos] = elem;
     head_pos = insert_pos;  // Update head after insertion
     count++;
@@ -94,7 +91,7 @@ element *queue_get(belt *current_belt) {
     }
 
     BUFFER[tail_pos] = NULL;
-    tail_pos = (tail_pos + 1) % current_belt->size;
+    tail_pos = (tail_pos + 1) % current_belt -> size;
     count--;
 
     pthread_mutex_unlock(&QUEUE_MUTEX);
@@ -107,13 +104,13 @@ element *queue_get(belt *current_belt) {
 }
 
 // Check if the queue is empty
-int queue_empty(belt *current_belt) {
-
+int queue_empty() {
+    if (count == 0) return 1;
     return 0;
 }
 
 // Check if the queue is full
 int queue_full(belt *current_belt) {
-
+    if (count == current_belt -> size) return 1;
     return 0;
 }
