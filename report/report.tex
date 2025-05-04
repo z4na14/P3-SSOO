@@ -69,7 +69,7 @@
       exercise, therefore, without the need of implementing a more
       complex algorithm to control more queues.
 
-      \subsection{queue\_init\(\)}
+      \subsection{queue\_init}
 
       \setcounter{subsubsection}{0}
 
@@ -77,7 +77,7 @@
       belt, doing the necessary checks of the input data, starting the
       semaphores and the mutex.
 
-      \subsection{queue\_destroy\(\)}
+      \subsection{queue\_destroy}
 
       \setcounter{subsubsection}{0}
 
@@ -85,7 +85,7 @@
       clearing the remaining elements from the buffer that could not
       have been freed corectly during the belt processing.
 
-      \subsection{queue\_put\(\)}
+      \subsection{queue\_put}
 
       \setcounter{subsubsection}{0}
 
@@ -103,7 +103,7 @@
       element, and we perform the modulus with the size of the belt to
       remain inside the belts boundaries.
 
-      \subsection{queue\_get\(\)}
+      \subsection{queue\_get}
 
       \setcounter{subsubsection}{0}
 
@@ -114,13 +114,13 @@
 
       \[(tail\_pos + 1) \% \text{ current\_belt -> size}\]
 
-      \subsection{queue\_empty\(\)}
+      \subsection{queue\_empty}
 
       \setcounter{subsubsection}{0}
 
       Checks if the queue is empty by using the \texttt{count} variable.
 
-      \subsection{queue\_full\(\)}
+      \subsection{queue\_full}
 
       \setcounter{subsubsection}{0}
 
@@ -133,25 +133,38 @@
 
       \setcounter{subsubsection}{0}
 
-      asdad
+      This file contains the code for the threads responsable for
+      manufacturing said belts passed as argument to a void pointer. It
+      is divided into the manager thread \texttt{process\_manager},
+      the producer and the consumer. All these make use of the queue
+      functions.
 
-      \subsection{process\_manager\(\)}
-
-      \setcounter{subsubsection}{0}
-
-      asdasd
-
-      \subsection{producer\(\)}
+      \subsection{process\_manager}
 
       \setcounter{subsubsection}{0}
 
-      asdasda
+      Initializes the producer and consumer threads, while parsing the
+      input data and synchronizes them with the parent thread from the
+      \texttt{factory\_manager}. It is also responsable of creating and
+      destroying the belts when the production of elements finishes.
 
-      \subsection{consumer\(\)}
+      \subsection{producer}
 
       \setcounter{subsubsection}{0}
 
-      asdasdad
+      Produces the elements from the belts, while synchronizing with the
+      consumer thread using a mutex to avoid both from modifying the
+      belt or the global variables at the same time, and semaphores to
+      have extra control over the amount of elements that are being
+      produced and the ones that must be retrieved.
+
+      \subsection{consumer}
+
+      \setcounter{subsubsection}{0}
+
+      As already commented in the producer function, uses
+      synchronization mechanisms to avoid modifying the belt incorrectly
+      and global variables to retrieve the elements.
 
       \section{factory\_manager.c}
 
@@ -159,25 +172,34 @@
 
       \setcounter{subsubsection}{0}
 
-      asdasdad
+      These functions are just responsible from parsing the inputted
+      file, checking if the data is correct, and starting starting the
+      required threads for running each belt \emph{in order}.
 
-      \subsection{main\(\)}
-
-      \setcounter{subsubsection}{0}
-
-      asdasd
-
-      \subsection{tokenizar\_linea\(\)}
+      \subsection{main}
 
       \setcounter{subsubsection}{0}
 
-      asasdad
+      As already mentioned, parses the input file, checks for errors,
+      and starts each thread appropiately, while synchronizing with them
+      to ensure the correct order. This was the most challenging part,
+      as we had to implement multiple semaphores and mutexes to
+      guarantee this requirement.
 
-      \subsection{parse\_file\(\)}
+      \subsection{tokenizar\_linea}
 
       \setcounter{subsubsection}{0}
 
-      asdasdadasdsad
+      Reused function from previous labs, modified to generalize two
+      cases of lines to tokenize and improving error management.
+
+      \subsection{parse\_file}
+
+      \setcounter{subsubsection}{0}
+
+      Another reused function, modified to correct a memory leak and
+      multiple errors that were arising from not closing the source
+      file, therefore leading to undefined behavior.
 
       \part{Tests}
 
@@ -261,7 +283,7 @@
       \texttt{1\ 1\ 5\ 5\ 99} & Error message, program exits with
       failure \\
       TC17 & Producer fails memory allocation & Simulate malloc failure
-      in \texttt{producer\(\)} & Error message, thread exits with
+      in \texttt{producer} & Error message, thread exits with
       failure \\
       TC18 & Consumer fails integrity check & Simulate mismatch in
       \texttt{id\_belt} & Error message, thread exits with failure \\
@@ -281,7 +303,14 @@
 
       \setcounter{subsubsection}{0}
 
-      ola
+      This laboratory helped us understand the importante of concurrency
+      and synchroniaztion mechanisms, while also teaching us how to
+      approach them. The work with the tester is also an important part
+      to mention, as it helped us find all the errors that we weren't
+      able to acknowledge beforehand.
+
+      To conclude, it was a really interesting exercise, which we are
+      looking forward to see more in other subjects.
 
     \end{report}
 
