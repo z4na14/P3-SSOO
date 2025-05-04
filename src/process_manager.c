@@ -1,8 +1,6 @@
 #include <errno.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <unistd.h>
-#include <fcntl.h>
 #include <pthread.h>
 #include <semaphore.h>
 
@@ -42,8 +40,8 @@ void *process_manager(void *belt_ptr) {
 
 	// Create and initialize producer and consumer threads
 	pthread_t produced_thread, consumer_thread;
-	pthread_create(&produced_thread, NULL, producer, belt_ptr);
-	pthread_create(&consumer_thread, NULL, consumer, belt_ptr);
+	pthread_create(&produced_thread, nullptr, producer, belt_ptr);
+	pthread_create(&consumer_thread, nullptr, consumer, belt_ptr);
 
 	// Synchronization mechanism to wait for the producer and consumer functions to finish
 
@@ -116,7 +114,7 @@ void *consumer(void *belt_ptr) {
 		}
 
 		free(elem); // Free memory after consuming
-		elem = NULL;
+		elem = nullptr;
 	}
 
 	*result = EXIT_SUCCESS;

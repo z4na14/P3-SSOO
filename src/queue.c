@@ -19,7 +19,7 @@ static int count = 0; // Total number of elements inside the buffer
 
 
 // Initialize the queue with a fixed size
-int queue_init(belt *current_belt) {
+int queue_init(const belt *current_belt) {
     if (current_belt -> size <= 0) {
         fprintf(stderr, "[ERROR][queue] There was an error while using queue with id: %d.\n", current_belt -> id);
         exit(EXIT_FAILURE);
@@ -34,23 +34,23 @@ int queue_init(belt *current_belt) {
 
     sem_init(&EMPTY_SLOTS_SEM, 0, current_belt -> size); // Initially all slots are empty
     sem_init(&FULL_SLOTS_SEM, 0, 0); // Initially no slots are full
-    pthread_mutex_init(&QUEUE_MUTEX, NULL); // Initialize mutual exclusion
+    pthread_mutex_init(&QUEUE_MUTEX, nullptr); // Initialize mutual exclusion
 
     return 0;
 }
 
 // Destroy the queue and free all resources
-int queue_destroy(belt *current_belt) {
+int queue_destroy(const belt *current_belt) {
     // Free any remaining elements in the buffer
     for (int i = 0; i < current_belt -> size; i++) {
         if (BUFFER[i] != NULL) {
             free(BUFFER[i]);
-            BUFFER[i] = NULL;
+            BUFFER[i] = nullptr;
         }
     }
 
     free(BUFFER);
-    BUFFER = NULL;
+    BUFFER = nullptr;
     sem_destroy(&EMPTY_SLOTS_SEM);
     sem_destroy(&FULL_SLOTS_SEM);
     pthread_mutex_destroy(&QUEUE_MUTEX);
@@ -59,7 +59,7 @@ int queue_destroy(belt *current_belt) {
 }
 
 // Add an element to the queue (waits if full)
-int queue_put(belt *current_belt, element *elem) {
+int queue_put(const belt *current_belt, element *elem) {
     sem_wait(&EMPTY_SLOTS_SEM); // Check if there are enough empty slots
     pthread_mutex_lock(&QUEUE_MUTEX); // and lock the critical section while modifying it
 
@@ -79,7 +79,7 @@ int queue_put(belt *current_belt, element *elem) {
 }
 
 // Get an element from the queue (waits if empty)
-element *queue_get(belt *current_belt) {
+element *queue_get(const belt *current_belt) {
     sem_wait(&FULL_SLOTS_SEM); // Check if there are any elements in the buffer
     pthread_mutex_lock(&QUEUE_MUTEX); // Lock mutex and access critical section
 
@@ -87,10 +87,10 @@ element *queue_get(belt *current_belt) {
     if (elem == NULL) {  // Additional safety check
         pthread_mutex_unlock(&QUEUE_MUTEX);
         sem_post(&FULL_SLOTS_SEM);  // Restore semaphore count
-        return NULL;
+        return nullptr;
     }
 
-    BUFFER[tail_pos] = NULL;
+    BUFFER[tail_pos] = nullptr;
     tail_pos = (tail_pos + 1) % current_belt -> size;
     count--;
 
@@ -110,7 +110,7 @@ int queue_empty() {
 }
 
 // Check if the queue is full
-int queue_full(belt *current_belt) {
+int queue_full(const belt *current_belt) {
     if (count == current_belt -> size) return 1;
     return 0;
 }

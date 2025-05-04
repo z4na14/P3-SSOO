@@ -9,11 +9,11 @@ typedef struct {
   int last; // 1 if inserted the last one, 0 otherwise
 } element;
 
-int queue_init(belt *current_belt) ;
-int queue_destroy(belt *current_belt);
-int queue_put(belt *current_belt, element *elem);
-element *queue_get(belt *current_belt);
+int queue_init(const belt *current_belt) ;
+int queue_destroy(const belt *current_belt);
+int queue_put(const belt *current_belt, element *elem);
+element *queue_get(const belt *current_belt);
 int queue_empty();
-int queue_full(belt *current_belt);
+int queue_full(const belt *current_belt);
 
 #endif

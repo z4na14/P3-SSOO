@@ -6,7 +6,7 @@ BUILD_DIR=build
 TEST_DIR=tests
 INCLUDE=-I./$(SRC_DIR)/inc
 
-SRCS=$(wildcard $(SRC_DIR)/*.c)
+SRCS=$(SRC_DIR)/queue.c $(SRC_DIR)/process_manager.c $(SRC_DIR)/factory_manager.c
 OBJ=$(BUILD_DIR)/queue.o $(BUILD_DIR)/process_manager.o $(BUILD_DIR)/factory_manager.o
 INC=$(SRC_DIR)/inc/belt_struct.h $(SRC_DIR)/inc/factory_manager.h $(SRC_DIR)/inc/process_manager.h $(SRC_DIR)/inc/queue.h
 

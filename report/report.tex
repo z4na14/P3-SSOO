@@ -73,17 +73,17 @@
 
       \setcounter{subsubsection}{0}
 
-      Function responsible for intializing the queue used by the current
-      belt, doing the necessary checks of the input data, starting the
-      semaphores and the mutex.
+      Function responsible for initializing the queue used by the
+      current belt, doing the necessary checks of the input data,
+      starting the semaphores and the mutex.
 
       \subsection{queue\_destroy}
 
       \setcounter{subsubsection}{0}
 
-      Destroys everything created by the afore mentioned function,
+      Destroys everything created by the fore mentioned function,
       clearing the remaining elements from the buffer that could not
-      have been freed corectly during the belt processing.
+      have been freed correctly during the belt processing.
 
       \subsection{queue\_put}
 
@@ -109,7 +109,7 @@
 
       As putting an element, we are going to be calculating the position
       of the element to be getting, first retrieving said element from
-      the buffer, and then updating the tail position usign a similar
+      the buffer, and then updating the tail position using a similar
       operation as the \texttt{queue\_put} function:
 
       \[(tail\_pos + 1) \% \text{ current\_belt -> size}\]
@@ -133,9 +133,9 @@
 
       \setcounter{subsubsection}{0}
 
-      This file contains the code for the threads responsable for
+      This file contains the code for the threads responsible for
       manufacturing said belts passed as argument to a void pointer. It
-      is divided into the manager thread \texttt{process\_manager},
+      is divided into the manager thread \texttt{process\_manager()},
       the producer and the consumer. All these make use of the queue
       functions.
 
@@ -181,9 +181,9 @@
       \setcounter{subsubsection}{0}
 
       As already mentioned, parses the input file, checks for errors,
-      and starts each thread appropiately, while synchronizing with them
-      to ensure the correct order. This was the most challenging part,
-      as we had to implement multiple semaphores and mutexes to
+      and starts each thread appropriately, while synchronizing with
+      them to ensure the correct order. This was the most challenging
+      part, as we had to implement multiple semaphores and mutexes to
       guarantee this requirement.
 
       \subsection{tokenizar\_linea}
@@ -209,12 +209,20 @@
 
       \setcounter{subsubsection}{0}
 
-      When running the tester, we were encountering times where we were
-      getting 73/74 and other ones with 74/74. We cheked and realized
-      that the Test 6 was failing sometimes. Even though, we reached to
-      the conclusion that sometimes the scheduling of the operating
-      system was putting one of the threads before another one,
-      therefore changing the output and failing the test.
+      When running the tester, there were times when we were getting the
+      whole set of tests as correct, and other times when some of them
+      were failing. In Debian (Guernika) was less consistent compared to
+      Arch (local machine), where we got most of the time the 74/74
+      cases. Anyway, we reached to the conclusion that sometimes the
+      scheduling of the operating system was putting one of the threads
+      before another one, therefore changing the output and failing the
+      test. \emph{See Fig. 1}
+
+      \begin{figure}
+      \centering
+      \includegraphics[scale=0.7]{img/tests.png}
+      \caption{Tests screenshot}
+      \end{figure}
 
       Aside from the base tests provided in the tester, we are going to
       use the following ones to check manually if the solution follows
@@ -283,7 +291,7 @@
       \texttt{1\ 1\ 5\ 5\ 99} & Error message, program exits with
       failure \\
       TC17 & Producer fails memory allocation & Simulate malloc failure
-      in \texttt{producer} & Error message, thread exits with
+      in \texttt{producer()} & Error message, thread exits with
       failure \\
       TC18 & Consumer fails integrity check & Simulate mismatch in
       \texttt{id\_belt} & Error message, thread exits with failure \\
@@ -303,14 +311,14 @@
 
       \setcounter{subsubsection}{0}
 
-      This laboratory helped us understand the importante of concurrency
-      and synchroniaztion mechanisms, while also teaching us how to
+      This laboratory helped us understand the important of concurrency
+      and synchronization mechanisms, while also teaching us how to
       approach them. The work with the tester is also an important part
       to mention, as it helped us find all the errors that we weren't
       able to acknowledge beforehand.
 
-      To conclude, it was a really interesting exercise, which we are
-      looking forward to see more in other subjects.
+      To conclude, it was a fascinating exercise, which we are looking
+      forward to seeing more in other subjects.
 
     \end{report}
 

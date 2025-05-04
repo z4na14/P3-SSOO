@@ -27,7 +27,7 @@ int main (const int argc, const char *argv[]){
 	}
 
 	// Get information from the input file and store it into file_buffer
-	char* file_buffer = 0;
+	char* file_buffer = nullptr;
 	int buffer_size = (int) parse_file(argv[1], &file_buffer);
 
 	if (tokenizar_linea(file_buffer, "\n", NULL, 0) != 1) {
@@ -84,7 +84,7 @@ int main (const int argc, const char *argv[]){
 
 	// For each belt that must be processes
 	for (i = 0; i < num_of_belts; i++) {
-		pthread_create(&BELTS[i].thread_b, NULL, process_manager, &BELTS[i]);
+		pthread_create(&BELTS[i].thread_b, nullptr, process_manager, &BELTS[i]);
 		fprintf(stdout, "[OK][factory_manager] Process_manager with id %d has been created.\n", BELTS[i].id);
 	}
 
@@ -110,7 +110,8 @@ int main (const int argc, const char *argv[]){
 			fprintf(stdout, "[OK][factory_manager] Process_manager with id %d has finished.\n", BELTS[i].id);
 		}
 
-		free(thread_return);
+		free(thread_return); // Free allocated variable inside the pthread_join call
+		sem_destroy(&BELTS[i].semaphore_b); // Destroy semaphore of the respective belt
 	}
 
 
@@ -138,20 +139,20 @@ int tokenizar_linea(char *linea, const char *delim, void *tokens, const unsigned
 
 	int index = 0;
 	char *token = strtok(linea, delim);
-	char *err = 0;
+	char *err = nullptr;
 
 	// If no place to store tokens is passed, return just the number of findings
 	if (tokens == NULL) {
 		while (token != NULL) {
 			index++;
-			token = strtok(NULL, delim);
+			token = strtok(nullptr, delim);
 		}
 		return index;
 	}
 
 	// Divide into two possible input strings, depending on the type passed as argument
-	int *tokens_ptr_int = NULL;
-	char **tokens_ptr_str = NULL;
+	int *tokens_ptr_int = nullptr;
+	char **tokens_ptr_str = nullptr;
 
 	if (type) {tokens_ptr_int = (int *) tokens;}
 	else {tokens_ptr_str = (char **) &tokens;}
@@ -171,11 +172,11 @@ int tokenizar_linea(char *linea, const char *delim, void *tokens, const unsigned
 		else {tokens_ptr_str[index++] = token;}
 
 		// and get the following token to add
-		token = strtok(NULL, delim);
+		token = strtok(nullptr, delim);
 	}
 
 	// Null-terminate the string array
-	if (!type) {tokens_ptr_str[index] = NULL;}
+	if (!type) {tokens_ptr_str[index] = nullptr;}
 
 	return index;
 }
