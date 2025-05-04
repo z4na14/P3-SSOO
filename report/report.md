@@ -15,44 +15,33 @@ titulo: Multi-thread programming
 ---
 # Description of the code
 
-The laboratory is composed of three source files, all compiled into the same one. Therefore, multiple header files had been used, each one having their respective import protections and
-function declarations.
+The laboratory is composed of three source files, all compiled into the same one. Therefore, multiple header files had been used, each one having their respective import protections and function declarations.
 
 ## queue.c
 
-This file is responsible for the manipulation of the different queues created during the 
-duration of the program. A single queue can be used at the same time, following the statement
-of the exercise, therefore, without the need of implementing a more complex algorithm to
-control more queues. 
+This file is responsible for the manipulation of the different queues created during the duration of the program. A single queue can be used at the same time, following the statement of the exercise, therefore, without the need of implementing a more complex algorithm to control more queues. 
 
 ### queue\_init\(\)
 
-Function responsible for intializing the queue used by the current belt, doing the necessary checks
-of the input data, starting the semaphores and the mutex.
+Function responsible for intializing the queue used by the current belt, doing the necessary checks of the input data, starting the semaphores and the mutex.
 
 ### queue\_destroy\(\)
 
-Destroys everything created by the afore mentioned function, clearing the remaining elements
-from the buffer that could not have been freed corectly during the belt processing.
+Destroys everything created by the afore mentioned function, clearing the remaining elements from the buffer that could not have been freed corectly during the belt processing.
 
 ### queue\_put\(\)
 
-Puts an element into the queue, following the respective synchronization mechanisms. For this,
-three static global variables are going to be used, one for the position of the head, another 
-for the tail, and the total count of elements inside the buffer.
+Puts an element into the queue, following the respective synchronization mechanisms. For this, three static global variables are going to be used, one for the position of the head, another for the tail, and the total count of elements inside the buffer.
 
 To calculate the insertion position, we use the operation:
 
 $$(head\_pos + 1) \% \text{ current\_belt -> size}$$
 
-Where the head position is the last place where we inserted an element, and we perform the modulus
-with the size of the belt to remain inside the belts boundaries.
+Where the head position is the last place where we inserted an element, and we perform the modulus with the size of the belt to remain inside the belts boundaries.
 
 ### queue\_get\(\)
 
-As putting an element, we are going to be calculating the position of the element to be getting, 
-first retrieving said element from the buffer, and then updating the tail position usign a similar
-operation as the `queue_put` function:
+As putting an element, we are going to be calculating the position of the element to be getting, first retrieving said element from the buffer, and then updating the tail position usign a similar operation as the `queue_put` function:
 
 $$(tail\_pos + 1) \% \text{ current\_belt -> size}$$
 
@@ -68,38 +57,37 @@ Same as `queue_empty`, but checks comparing it to the belt struct.
 
 ## process\_manager.c
 
-asdad
+This file contains the code for the threads responsable for manufacturing said belts passed as argument to a void pointer. It is divided into the manager thread `process_manager()`, the producer and the consumer. All these make use of the queue functions.
 
 ### process\_manager\(\)
 
-asdasd
+Initializes the producer and consumer threads, while parsing the input data and synchronizes them with the parent thread from the `factory_manager`. It is also responsable of creating and destroying the belts when the production of elements finishes.
 
 ### producer\(\)
 
-asdasda
+Produces the elements from the belts, while synchronizing with the consumer thread using a mutex to avoid both from modifying the belt or the global variables at the same time, and semaphores to have extra control over the amount of elements that are being produced and the ones that must be retrieved.
 
 ### consumer\(\)
 
-asdasdad
+As already commented in the producer function, uses synchronization mechanisms to avoid modifying the belt incorrectly and global variables to retrieve the elements.
 
 
 
 ## factory\_manager.c
 
-asdasdad
+These functions are just responsible from parsing the inputted file, checking if the data is correct, and starting starting the required threads for running each belt *in order*. 
 
 ### main\(\)
 
-asdasd
+As already mentioned, parses the input file, checks for errors, and starts each thread appropiately, while synchronizing with them to ensure the correct order. This was the most challenging part, as we had to implement multiple semaphores and mutexes to guarantee this requirement.
 
 ### tokenizar\_linea\(\)
 
-asasdad
+Reused function from previous labs, modified to generalize two cases of lines to tokenize and improving error management.
 
 ### parse\_file\(\)
 
-
-asdasdadasdsad
+Another reused function, modified to correct a memory leak and multiple errors that were arising from not closing the source file, therefore leading to undefined behavior.
 
 
 # Tests
@@ -135,4 +123,6 @@ Aside from the base tests provided in the tester, we are going to use the follow
 
 # Conclusion
 
-ola
+This laboratory helped us understand the importante of concurrency and synchroniaztion mechanisms, while also teaching us how to approach them. The work with the tester is also an important part to mention, as it helped us find all the errors that we weren't able to acknowledge beforehand.
+
+To conclude, it was a really interesting exercise, which we are looking forward to see more in other subjects.
