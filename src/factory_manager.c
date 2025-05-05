@@ -60,7 +60,7 @@ int main (const int argc, const char *argv[]){
 	int i, num_of_belts;
 	for (i = 1, num_of_belts = 0; i < num_info; i+=3, num_of_belts++) {
 		// Check if information is valid
-		if (tokens[i] <= 0 || tokens[i+1] <= 0 || tokens[i+2] <= 0) {
+		if (tokens[i] < 0 || tokens[i+1] <= 0 || tokens[i+2] <= 0) {
 			fprintf(stderr, "[ERROR][factory_manager] Invalid file.\n");
 			exit(EXIT_FAILURE);
 		}
